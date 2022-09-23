@@ -1,0 +1,672 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
+<title>Eltrade ECR printer driver - test application</title>
+<style type="text/css">
+<!--
+.style1 {
+	font-size: large;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+<script language="javascript">
+function Check(){
+        result.style.color = "black";
+	result.innerText   = "...";
+	result1.innerText  = "";	
+	var efp = new ActiveXObject("EltradeFPAx.EltradeFprn");
+	efp.Close();
+	var res = efp.Init(parseInt(comport.value, 10), 115200, 0, 0, 0, "");
+	
+	if (res > 0){
+ 	  result.innerText = efp.GetErrCodeText(res, 0);
+	  result.style.color = "red";
+	  result1.innerText = efp.GetLastError(0);
+	  result1.style.color = "red";	  
+	}	
+	else {
+	  result.innerText = "Check Device -> OK";
+	  efp.Close();
+	}
+}
+function GetInfo(){
+        result.style.color = "black";
+	result.innerText   = "...";
+	result1.innerText  = "";	
+	var efp = new ActiveXObject("EltradeFPAx.EltradeFprn");
+	var res = efp.Init(parseInt(comport.value, 10), 115200, 0, 0, 0, "");
+	
+	if (res > 0){
+ 	  result.innerText = efp.GetErrCodeText(res, 1);
+	  result.style.color = "red";
+	  result1.innerText = efp.GetLastError(1);
+	  result1.style.color = "red";	  
+	}	
+	else {
+	  result.innerText = "Device info ->\nSerial number: "+efp.GetSerialNumber()+"\nFiscal number: "+efp.GetFiscalNumber();
+	  efp.Close();
+	}
+}
+function GetVersion(){
+        result.style.color = "black";
+	result.innerText   = "...";
+	result1.innerText  = "";	
+	var efp = new ActiveXObject("EltradeFPAx.EltradeFprn");
+	var res = efp.Init(parseInt(comport.value, 10), 115200, 0, 0, 0, "");
+	
+	if (res > 0){
+ 	  result.innerText = efp.GetErrCodeText(res, 1);
+	  result.style.color = "red";
+	  result1.innerText = efp.GetLastError(1);
+	  result1.style.color = "red";	  
+	}	
+	else {
+	  result.innerText = "Version info ->\nVendor: "+efp.GetDriverVendor()+"\nDriver: "+efp.GetDriverVersion()+"\nPrinter: "+efp.GetPrinterModel();
+	  efp.Close();
+	}
+}
+function GetClock(){
+        result.style.color = "black";
+	result.innerText   = "...";
+	result1.innerText  = "";	
+	var efp = new ActiveXObject("EltradeFPAx.EltradeFprn");
+	var res = efp.Init(parseInt(comport.value, 10), 115200, 0, 0, 0, "");
+	
+	if (res > 0){
+ 	  result.innerText = efp.GetErrCodeText(res, 1);
+	  result.style.color = "red";
+	  result1.innerText = efp.GetLastError(1);
+	  result1.style.color = "red";	  
+	}	
+	else {
+          var dt = new Date(efp.GetClock());
+	  result.innerText = "Get clock -> OK ("+dt.toLocaleString()+")";
+	  efp.Close();
+	}
+}
+function SetClock(){
+        result.style.color = "black";
+	result.innerText   = "...";
+	result1.innerText  = "";	
+	var efp = new ActiveXObject("EltradeFPAx.EltradeFprn");
+	var res = efp.Init(parseInt(comport.value, 10), 115200, 0, 0, 0, "");
+	
+	if (res > 0){
+ 	  result.innerText = efp.GetErrCodeText(res, 1);
+	  result.style.color = "red";
+	  result1.innerText = efp.GetLastError(1);
+	  result1.style.color = "red";	  
+	}	
+	else {
+          var dt = new Date();
+          res = efp.SetClock(dt.getVarDate());
+ 	  if (res > 0){
+ 	      result.innerText = efp.GetErrCodeText(res, 1);
+	      result.style.color = "red";
+	      result1.innerText = efp.GetLastError(1);
+	      result1.style.color = "red";	  
+	  }
+	  else{
+	    result.innerText = "Set Clock -> OK";
+          }
+	  efp.Close();
+        }
+}
+function PrintReport(){
+        result.style.color = "black";
+	result.innerText   = "...";
+	result1.innerText  = "";	
+	var efp = new ActiveXObject("EltradeFPAx.EltradeFprn");
+	var res = efp.Init(parseInt(comport.value, 10), 115200, 0, 0, 0, "");
+	
+	if (res > 0){
+ 	  result.innerText = efp.GetErrCodeText(res, 1);
+	  result.style.color = "red";
+	  result1.innerText = efp.GetLastError(1);
+	  result1.style.color = "red";	  
+	}	
+	else {
+	  if (parseInt(reporttype.value, 10) == 1){
+	    res = efp.RunXReport();
+ 	    if (res > 0){
+ 	      result.innerText = efp.GetErrCodeText(res, 1);
+	      result.style.color = "red";
+	      result1.innerText = efp.GetLastError(1);
+	      result1.style.color = "red";	  
+	    }
+	    else{
+	      result.innerText = "Print X report -> OK";
+            }
+	  }
+	  else{
+	    if (parseInt(reporttype.value, 10) == 2){
+	      res = efp.RunZReport();
+ 	      if (res > 0){
+ 	        result.innerText = efp.GetErrCodeText(res, 1);
+	        result.style.color = "red";
+	        result1.innerText = efp.GetLastError(1);
+	        result1.style.color = "red";	  
+	      }
+	      else{
+	        result.innerText = "Print Z report -> OK";
+              }
+	    }
+	    else{
+	     result.innerText = "Wring report type.";
+	    }
+          }
+	  efp.Close();
+	}
+}
+function PrintRecept(){
+        result.style.color = "black";
+	result.innerText   = "...";
+	result1.innerText  = "";	
+	var efp = new ActiveXObject("EltradeFPAx.EltradeFprn");
+	var res = efp.Init(parseInt(comport.value, 10), 115200, 0, 0, 0, "");
+		
+	if (res > 0){
+ 	  result.innerText = efp.GetErrCodeText(res, 1);
+	  result.style.color = "red";
+	  result1.innerText = efp.GetLastError(1);
+	  result1.style.color = "red";	  
+	}	
+	else {
+		efp.GenerateLogFile=1;
+		efp.LogFilePath='D://';
+	  res = efp.StartBon(parseInt(recepttype.value, 10), 1, "Cashier 1", "9000000001", "123456789", "BG123456789", "Company Name", "City", "Address", "MOL", "Receiver");
+ 	  if (res > 0){
+ 	    result.innerText = efp.GetErrCodeText(res, 1);
+	    result.style.color = "red";
+	    result1.innerText = efp.GetLastError(1);
+	    result1.style.color = "red";	  
+	  }
+	  else{
+	    res = efp.AddLine(" ", "", 1);
+	    if (res == 0) {res = efp.AddLine("Free text at the top of receipt.", "", 1);}
+	    if (res == 0) res = efp.AddLine(" ", "", 1);
+	    if (res == 0) res = efp.AddLine("Dbwidth sample", "DBWIDTH", 1);
+	    if (res == 0) res = efp.AddLine("Dbstrike sample", "DBSTRIKE", 1);
+	    if (res == 0) res = efp.AddLine("Underline sample", "UNDERLINE", 1);
+	    if (res == 0) res = efp.AddLine(" ", "", 1);
+	    if (res == 0) res = efp.AddLine("Sample PLU with percentage add on", "", 1);
+	    if (res == 0) res = efp.AddLine(" ", "", 1);
+	    if (res == 0) res = efp.AddPlu("1", "PLU number 1", 1.23, 1, 1);
+	    if (res == 0) res = efp.AddDiscount(1, 10.00);
+	    if (res == 0) res = efp.AddLine(" ", "", 1);
+	    if (res == 0) res = efp.AddPlu("2", "PLU number 2", 2.34, 2.25, 2);
+	    if (res == 0) res = efp.AddLine(" ", "", 1);
+      if (res == 0) res = efp.AddPlu("3", "PLU number 3", 3.45, 5, 2);
+	    if (res == 0) res = efp.AddLine(" ", "", 1);
+	    if (res == 0) res = efp.AddLine("Sample of PLU refund", "", 1);
+	    if (res == 0) res = efp.AddLine(" ", "", 1);
+      if (res == 0) res = efp.AddPlu("4", "PLU number 4", 1.55, -1, 2);
+	    if (res == 0) res = efp.AddLine(" ", "", 1);
+	    if (res == 0) res = efp.AddLine("Sample of STL discount", "", 1);
+	    if (res == 0) res = efp.AddLine(" ", "", 1);
+	    if (res == 0) res = efp.AddDiscount(2, -10.00);
+	    if (res == 0) res = efp.AddLine(" ", "", 1);
+	    if (res == 0) res = efp.AddLine("Free text at the end of receipt.", "", 1);
+	    if (res == 0) res = efp.AddLine(" ", "", 1);
+	    if (res == 0) res = efp.AddPayment(2, "CARD", 2, 1);
+	    if (res == 0) res = efp.AddPayment(1, "CASH", 100, 1);
+	    if (res == 0) res = efp.EndBon();
+ 	    if (res > 0){
+ 	      result.innerText = efp.GetErrCodeText(res, 1);
+	      result.style.color = "red";
+	      result1.innerText = efp.GetLastError(1);
+	      result1.style.color = "red";	  
+	    }
+	    else{
+	      result.innerText = "Print test recept -> OK (Recept number: "+efp.GetLastBonNumber()+")";
+	    }
+	  }
+	  efp.Close();
+	}
+}
+function PrintBarcode(){
+        result.style.color = "black";
+	result.innerText   = "...";
+	result1.innerText  = "";	
+	var efp = new ActiveXObject("EltradeFPAx.EltradeFprn");
+	var res = efp.Init(parseInt(comport.value, 10), 115200, 0, 0, 0, "");
+	efp.GenerateLogFile=1;
+	efp.LogFilePath='D://';		
+	if (res > 0){
+ 	  result.innerText = efp.GetErrCodeText(res, 1);
+	  result.style.color = "red";
+	  result1.innerText = efp.GetLastError(1);
+	  result1.style.color = "red";	  
+	}	
+	else {
+	  res = efp.StartBon(1, 1, "Cashier 1", "0", "", "", "", "", "", "", "");
+ 	  if (res > 0){
+ 	    result.innerText = efp.GetErrCodeText(res, 1);
+	    result.style.color = "red";
+	    result1.innerText = efp.GetLastError(1);
+	    result1.style.color = "red";	  
+	  }
+	  else{
+	    res = efp.AddLine(" ", "", 1);
+	    if (res == 0) {res = efp.AddLine("Barcode samples ...", "", 1);}
+	    if (res == 0) res = efp.AddLine("EAN 13; Height:90 Hri:2", "", 1);
+	    if (res == 0) res = efp.AddBarcode(2, 90, 2, "123456789012");
+	    if (res == 0) res = efp.AddLine(" ", "", 1);
+	    if (res == 0) res = efp.AddLine("EAN 8; Height:120 Hri:1", "", 1);
+	    if (res == 0) res = efp.AddBarcode(3, 120, 1, "1234567");
+	    if (res == 0) res = efp.AddLine(" ", "", 1);
+	    if (res == 0) res = efp.AddLine("UPC A; Height:90 Hri:0", "", 1);
+	    if (res == 0) res = efp.AddBarcode(0, 90, 0, "123456789012");
+	    if (res == 0) res = efp.AddLine(" ", "", 1);
+	    if (res == 0) res = efp.AddLine("CODE39; Height:90 Hri:3", "", 1);
+	    if (res == 0) res = efp.AddBarcode(4, 90, 3, "1ABCD3");
+	    if (res == 0) res = efp.AddLine(" ", "", 1);
+	    if (res == 0) res = efp.AddLine("CODE128; Height:90 Hri:2", "", 1);
+	    if (res == 0) res = efp.AddBarcode(8, 90, 2, "ABCDEFGHIJKLMNOPQRST");
+	    if (res == 0) res = efp.EndBon();
+ 	    if (res > 0){
+ 	      result.innerText = efp.GetErrCodeText(res, 1);
+	      result.style.color = "red";
+	      result1.innerText = efp.GetLastError(1);
+	      result1.style.color = "red";	  
+	    }
+	    else{
+	      result.innerText = "Print barcode recept -> OK (Recept number: "+efp.GetLastBonNumber()+")";
+	    }
+	  }
+	  efp.Close();
+	}
+}
+function PrintCopy(){
+        result.style.color = "black";
+	result.innerText   = "...";
+	result1.innerText  = "";	
+	var efp = new ActiveXObject("EltradeFPAx.EltradeFprn");
+	var res = efp.Init(parseInt(comport.value, 10), 115200, 0, 0, 0, "");
+	
+	if (res > 0){
+ 	  result.innerText = efp.GetErrCodeText(res, 1);
+	  result.style.color = "red";
+	  result1.innerText = efp.GetLastError(1);
+	  result1.style.color = "red";	  
+	}	
+	else {
+	  res = efp.CopyLastBon();
+	  if (res > 0){
+ 	      result.innerText = efp.GetErrCodeText(res, 1);
+	      result.style.color = "red";
+	      result1.innerText = efp.GetLastError(1);
+	      result1.style.color = "red";	  
+	    }
+	    else{
+	      result.innerText = "Print recept copy -> OK (Recept number: "+efp.GetLastBonNumber()+")";
+	  }
+	  efp.Close();
+	}
+}
+function PrintFMReport(){
+        result.style.color = "black";
+	result.innerText   = "...";
+	result1.innerText  = "";	
+	var efp = new ActiveXObject("EltradeFPAx.EltradeFprn");
+	var res = efp.Init(parseInt(comport.value, 10), 115200, 0, 0, 0, "");
+	
+	if (res > 0){
+ 	  result.innerText = efp.GetErrCodeText(res, 1);
+	  result.style.color = "red";
+	  result1.innerText = efp.GetLastError(1);
+	  result1.style.color = "red";	  
+	}	
+	else {
+          var today = new Date(); 
+          var firtDayOfYear = new Date(today.getYear(), 0, 1);
+	  res = efp.RunFMDateReport(firtDayOfYear.getVarDate(), today.getVarDate(), 0);
+	  if (res > 0){
+ 	      result.innerText = efp.GetErrCodeText(res, 1);
+	      result.style.color = "red";
+	      result1.innerText = efp.GetLastError(1);
+	      result1.style.color = "red";	  
+	    }
+	    else{
+              result.innerText = "Print FM Date report -> OK (Recept number: "+efp.GetLastBonNumber()+")";
+	  }
+	  efp.Close();
+	}
+}
+function PrintPLUReport(){
+        result.style.color = "black";
+	result.innerText   = "...";
+	result1.innerText  = "";	
+	var efp = new ActiveXObject("EltradeFPAx.EltradeFprn");
+	var res = efp.Init(parseInt(comport.value, 10), 115200, 0, 0, 0, "");
+	
+	if (res > 0){
+ 	  result.innerText = efp.GetErrCodeText(res, 1);
+	  result.style.color = "red";
+	  result1.innerText = efp.GetLastError(1);
+	  result1.style.color = "red";	  
+	}	
+	else {
+	  res = efp.RunPLUReport(0, 1);
+	  if (res > 0){
+ 	      result.innerText = efp.GetErrCodeText(res, 1);
+	      result.style.color = "red";
+	      result1.innerText = efp.GetLastError(1);
+	      result1.style.color = "red";	  
+	    }
+	    else{
+              result.innerText = "Print PLU report -> OK (Recept number: "+efp.GetLastBonNumber()+")";
+	  }
+	  efp.Close();
+	}
+}
+function MoneyIn(){
+        result.style.color = "black";
+	result.innerText   = "...";
+	result1.innerText  = "";	
+	var efp = new ActiveXObject("EltradeFPAx.EltradeFprn");
+	var res = efp.Init(parseInt(comport.value, 10), 115200, 0, 0, 0, "");
+	
+	if (res > 0){
+ 	  result.innerText = efp.GetErrCodeText(res, 1);
+	  result.style.color = "red";
+	  result1.innerText = efp.GetLastError(1);
+	  result1.style.color = "red";	  
+	}	
+	else {
+	  res = efp.InOutMoney(12.34, 1);
+	  if (res > 0){
+ 	      result.innerText = efp.GetErrCodeText(res, 1);
+	      result.style.color = "red";
+	      result1.innerText = efp.GetLastError(1);
+	      result1.style.color = "red";	  
+	    }
+	    else{
+              result.innerText = "Money ADD receipt -> OK (Recept number: "+efp.GetLastBonNumber()+")";
+	  }
+	  efp.Close();
+	}
+}
+
+
+function GetTotals(){
+  result.style.color = "black";
+	result.innerText   = "...";
+	result1.innerText  = "";	
+
+	var efp = new ActiveXObject("EltradeFPAx.EltradeFprn");
+	var res = efp.Init(parseInt(comport.value, 10), 115200, 0, 0, 0, "");
+	efp.GenerateLogFile=1;
+	efp.LogFilePath='D://';	
+	if (res > 0){
+ 	  result.innerText = efp.GetErrCodeText(res, 1);
+	  result.style.color = "red";
+	  result1.innerText = efp.GetLastError(1);
+	  result1.style.color = "red";	  
+	}	
+	else {
+		res = efp.SetCurrency(1);
+		if (res==0){
+			var Total=0;
+			var Total_VAT=0;			
+		  res = efp.GetXReportTotalSh(Total, Total_VAT);
+		  if (res > 0){
+	 	      result.innerText = efp.GetErrCodeText(res, 1);
+		      result.style.color = "red";
+		      result1.innerText = efp.GetLastError(1);
+		      result1.style.color = "red";	  
+		    }
+		    else{
+		    	console.log(Total);
+	        result.innerText = "Get totals -> OK TOTAL: "+Total.toString()+", " + "TOTAL_VAT: "+Total_VAT.toString();
+		  }
+		}
+	  
+	}
+	efp.Close();
+}
+
+function PrintTest(){
+        result.style.color = "black";
+	result.innerText   = "...";
+	result1.innerText  = "";	
+	var efp = new ActiveXObject("EltradeFPAx.EltradeFprn");
+	var res = efp.Init(parseInt(comport.value, 10), 115200, 0, 0, 0, "");
+	
+	if (res > 0){
+ 	  result.innerText = efp.GetErrCodeText(res, 1);
+	  result.style.color = "red";
+	  result1.innerText = efp.GetLastError(1);
+	  result1.style.color = "red";	  
+	}	
+	else {
+	  res = efp.RunPrinterTest();
+	  if (res > 0){
+ 	      result.innerText = efp.GetErrCodeText(res, 1);
+	      result.style.color = "red";
+	      result1.innerText = efp.GetLastError(1);
+	      result1.style.color = "red";	  
+	    }
+	    else{
+              result.innerText = "Run printer test -> OK (Recept number: "+efp.GetLastBonNumber()+")";
+	  }
+	  efp.Close();
+	}
+}
+
+//this is the function where im trying to display a simple print message with the built in display print message had removed the path to the text file
+function DisplayPrint(){
+  result.style.color = "black";
+	result.innerText   = "...";
+	result1.innerText  = "";	
+	var efp = new ActiveXObject("EltradeFPAx.EltradeFprn");
+	var res = efp.Init(parseInt(comport.value, 10), 115200, 0, 0, 0, "");
+	
+	if (res > 0){
+ 	  result.innerText = efp.GetErrCodeText(res, 1);
+	  result.style.color = "red";
+	  result1.innerText = efp.GetLastError(1);
+	  result1.style.color = "red";	  
+	}	
+	else {
+	  res = efp.displayPrint('hello there','this is a text message');
+	  if (res > 0){
+ 	      result.innerText = efp.GetErrCodeText(res, 1);
+	      result.style.color = "red";
+	      result1.innerText = efp.GetLastError(1);
+	      result1.style.color = "red";	  
+	    }
+	    else{
+              result.innerText = "Run printer test -> OK (Recept number: "+efp.GetLastBonNumber()+")";
+	  }
+	  efp.Close();
+	}
+}
+</script>
+<table border="0" align="left" cellpadding="1" cellspacing="1">
+  <tr>
+    <td colspan="2"><span class="style1">ELTRADE Fiscal Printing ActiveX sample</span></td>
+  </tr>
+  <tr>
+    <td colspan="2"><hr></td>
+  </tr>
+  <tr>
+    <td>
+      <label>
+      <div align="right">COMport:
+        <select name="comport" id="comport">
+          <option value="1">COM1</option>
+          <option value="2">COM2</option>
+          <option value="3">COM3</option>
+          <option value="4">COM4</option>
+          <option value="5">COM5</option>
+          <option value="6">COM6</option>
+          <option value="7">COM7</option>
+          <option value="8">COM8</option>
+          <option value="9">COM9</option>
+          <option value="10">COM10</option>
+          <option value="11">COM11</option>
+          <option value="12">COM12</option>                    
+        </select>
+      </div>
+      </label>    <div align="right"></div></td>
+    <td>
+      <input type="button" name="InitFP" value="Check Printer"  language="JavaScript" onclick="Check();">    </td>
+  </tr>
+  <tr>
+    <td>
+      <div align="right">
+        <select name="recepttype" id="recepttype">
+          <option value="1">Non fiscal recept</option>
+          <option value="2">Fiscal recept</option>
+          <option value="3">Invoice</option>
+        </select>
+      </div></td>
+    <td>
+      <input type="button" name="PrintRecept" value="Print recept" language="JavaScript" onclick="PrintRecept();">    </td>
+  </tr>
+  <tr>
+    <td>
+      Print receipt with barcode </td>
+    <td>
+      <input type="button" name="PrintBarcode" value="Print receipt" language="JavaScript" onclick="PrintBarcode();">    </td>
+  </tr> 
+  <tr>
+    <td>
+      Money ADD receipt sample</td>
+    <td>
+      <input type="button" name="MoneyIn" value="Money In" language="JavaScript" onclick="MoneyIn();">    </td>
+  </tr>
+  <tr>
+    <td colspan="2"><hr></td>
+  </tr>
+  <tr>
+    <td>
+      <div align="right">
+        <select name="reporttype" id="reporttype">
+          <option value="1">Run Daily X report</option>
+          <option value="2">Run Daily Z report</option>
+        </select>
+      </div></td>
+    <td>
+      <input type="button" name="PrintReport" value="Print report" language="JavaScript" onclick="PrintReport();">    </td>
+  </tr>
+  <tr>
+    <td>
+      Run FM report (current year) </td>
+    <td>
+      <input type="button" name="PrintFMReport" value="Print report" language="JavaScript" onclick="PrintFMReport();">    </td>
+  </tr>
+  <tr>
+    <td>
+      Run PLU report </td>
+    <td>
+      <input type="button" name="PrintPLUReport" value="Print report" language="JavaScript" onclick="PrintPLUReport();">    </td>
+  </tr>
+  <tr>
+    <td>
+      Run printer test </td>
+    <td>
+      <input type="button" name="PrintTest" value="Print test" language="JavaScript" onclick="PrintTest();">    </td>
+  </tr>
+  <tr>
+    <td colspan="2"><hr></td>
+  </tr>
+  <tr>
+    <td>
+      Read device and driver version </td>
+    <td>
+      <input type="button" name="GetVersion" value="Read Info" language="JavaScript" onclick="GetVersion();">    </td>
+  </tr>
+  <tr>
+    <td>
+      Read device serial numbers    </td>
+    <td>
+      <input type="button" name="GetInfo" value="Read Info" language="JavaScript" onclick="GetInfo();">    </td>
+  </tr>
+  <tr>
+    <td>
+      Read clock     </td>
+    <td>
+      <input type="button" name="GetClock" value="Read Clock" language="JavaScript" onclick="GetClock();">    </td>
+  </tr>
+  <tr>
+    <td>
+      Write clock     </td>
+    <td>
+      <input type="button" name="SetClock" value="Write Clock" language="JavaScript" onclick="SetClock();">    </td>
+  </tr>
+  <tr>
+    <td>
+      Print on customer display</td>
+    <td>
+      <input type="button" name="DisplayPrint" value="Display print" language="JavaScript" onclick="DisplayPrint();">    </td>
+  </tr>
+  <tr>
+    <td>
+      Get totals</td>
+    <td>
+      <input type="button" name="Totals" value="Get totals" language="JavaScript" onclick="GetTotals();">    </td>
+  </tr>
+  <tr>
+    <td colspan="2"><hr></td>
+  </tr>
+  <tr>
+    <td><div>Result: </div></td>
+    <td><span id="result">none</span></td>
+  </tr>
+  <tr>
+    <td colspan="2"><span id="result1"></span></td>
+  </tr>  
+</table>
+ <input type="button" name="SetClock" value="printSimpleText" language="JavaScript" onclick="setClock();"></td>
+  </tr>
+ <input type="button" name="printMe" value="Print Simple Message" language="JavaScript" onclick='customMethod()';/td>
+ <!--<input type="file" name="inputfile"
+            id="inputfile">
+    <br>!-->
+    
+    <!--<pre id="output"></pre>    
+    <script type="text/javascript">
+        document.getElementById('inputfile')
+            .addEventListener('change', function() {
+            var fr=new FileReader();
+            var myResult = '';
+            fr.onload=function(){
+                myResult = fr.result;
+    		result.style.color = "black";
+		result.innerText   = "...";
+		result1.innerText  = "";	
+		var efp = new ActiveXObject("EltradeFPAx.EltradeFprn");
+		var res = efp.Init(parseInt(comport.value, 10), 115200, 0, 0, 0, "");
+
+		if (res > 0){
+ 	  	esult.innerText = efp.GetErrCodeText(res, 1);
+	  	result.style.color = "red";
+	  	result1.innerText = efp.GetLastError(1);
+	 	result1.style.color = "red";	  
+		}	
+		else {
+	  	res = efp.DisplayPrint(fr.result, fr.result);
+	  	if (res > 0){
+ 	       result.innerText = efp.GetErrCodeText(res, 1);
+	       result.style.color = "red";
+	       result1.innerText = efp.GetLastError(1);
+	       result1.style.color = "red";	  
+	     }
+	    else{
+              result.innerText = "Run printer test -> OK (Recept number: "+efp.GetLastBonNumber()+")";
+	  }
+	  efp.Close();
+	}	   
+           
+      }     
+     
+      fr.readAsText(this.files[0]);
+  })
+    </script>!-->
+</body>
+</html>
